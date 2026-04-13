@@ -1,0 +1,29 @@
+name: .NET Build and Test
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore CybersecurityBot/CybersecurityBot.csproj
+
+    - name: Build project
+      run: dotnet build CybersecurityBot/CybersecurityBot.csproj --configuration Release --no-restore
+
+    - name: Publish (verify output)
+      run: dotnet publish CybersecurityBot/CybersecurityBot.csproj --configuration Release --no-build
