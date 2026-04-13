@@ -1,0 +1,32 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest  # Use windows for System.Media support
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    
+    - name: Restore dependencies
+      run: dotnet restore CybersecurityBot/CybersecurityBot.csproj
+      # OR if in the project folder:
+      # run: |
+      #   cd CybersecurityBot
+      #   dotnet restore
+    
+    - name: Build
+      run: dotnet build CybersecurityBot/CybersecurityBot.csproj --no-restore
+    
+    - name: Run tests (if any)
+      run: dotnet test CybersecurityBot/CybersecurityBot.csproj --no-build --verbosity normal
